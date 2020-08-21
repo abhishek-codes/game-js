@@ -71,13 +71,14 @@ function explosion(x,y){
     },200);
 }
 
-function component(width, height, color, x, y,type) {
+function component(width, height, color, x, y,type,dir="left") {
     this.type = type;
     if(type=="image" || type =="background"){
         this.image = new Image();
         this.image.src = color;
     }
     this.width = width;
+    this.direction = dir;
     this.height = height;
     this.speedX = 0;
     this.speedY = 0;
@@ -145,12 +146,24 @@ function updateGameArea(){
     }
     myGameArea.frameNo +=1;
     if( myGameArea.frameNo == 1 || everyinterval(100)){
-        x = myGameArea.canvas.width;
+        var dir = "left";
+        if(Math.random()>0.5){
+            x = myGameArea.canvas.width;
+        }
+        else{
+            x=-60;
+            dir = "right";
+        }
         y = Math.floor(Math.random()*(200))
-        enemyShip.push(new component(60, 60, "../media/static/enemy.png", x, y,"image")); 
+        enemyShip.push(new component(60, 60, "../media/static/enemy.png", x, y,"image",dir)); 
     }
     for(i=0;i<enemyShip.length;i+=1){
-        enemyShip[i].x += -1.5;
+        if(enemyShip[i].direction == "left"){
+            enemyShip[i].x += -1.5;
+        }
+        else{
+            enemyShip[i].x += 1.5;
+        }
         enemyShip[i].update();
     }
     myShip.speedX = 0;
