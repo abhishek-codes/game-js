@@ -4,6 +4,7 @@ var myBullet = [];
 var enemyBullet = [];
 var explosionIm;
 var score = 0 ;
+var high_score = 0;
 var mybackground;
 var textDisplay;
 // For Mouse Movement
@@ -11,7 +12,8 @@ var shipPosition = 230;
 var global = this
 
 // Initial Score Count
-document.getElementById("score").innerHTML = score.toString().padStart(5, "0");;
+document.getElementById("score").innerHTML = score.toString().padStart(5, "0");
+document.getElementById("high_score").innerHTML = score.toString().padStart(5, "0");
 
 // Default Start Function
 function startGame() {
@@ -23,6 +25,9 @@ function startGame() {
 // Score Change to 5 Digits Function
 function updateScore(){
 	document.getElementById("score").innerHTML = score.toString().padStart(5, "0");;
+}
+function updateHighScore(){
+	document.getElementById("high_score").innerHTML = score.toString().padStart(5, "0");;
 }
 
 var myGameArea = {
@@ -103,8 +108,6 @@ function explosion(x,y){
     explosionIm.y = y;
     explosionIm.height = 80;
     explosionIm.width = 80;
-    score++;
-    updateScore();
     setTimeout(function(){
         explosionIm.height =0;
         explosionIm.width =0;
@@ -184,6 +187,8 @@ function updateGameArea(){
             if (enemyShip[i].crashwith(myBullet[j])){
                 ex=enemyShip[i].x;
                 ey=enemyShip[i].y;
+                score++;
+                updateScore();
                 explosion(ex,ey);
                 enemyShip.splice(i,1);
                 myBullet.splice(j,1);
@@ -251,7 +256,8 @@ function updateGameArea(){
     // Checking Collision of Player and Enemy Bullet
     for(i=0;i<enemyBullet.length;i+=1){
         if(myShip.crashwith(enemyBullet[i])){
-            score--;
+            high_score = score;
+            updateHighScore();
             explosion(myShip.x,myShip.y-20);
             myGameArea.stop();
             textDisplay = new component("48px", "Consolas", "white",130, 300, "text");
