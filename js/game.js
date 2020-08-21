@@ -184,10 +184,10 @@ function updateGameArea(){
     }
     myShip.speedX = 0;
     myShip.speedY = 0;
-    if ((myGameArea.keys && myGameArea.keys[37,65]) || (myGameArea.mouseLeft && myGameArea.mouseLeft===true)){
+    if ((myGameArea.keys && (myGameArea.keys[37])||(myGameArea.keys[65])) || (myGameArea.mouseLeft && myGameArea.mouseLeft===true)){
         myShip.speedX = -2;
     }
-    if ((myGameArea.keys && myGameArea.keys[39,68]) || (myGameArea.mouseRight && myGameArea.mouseRight===true)){
+    if ((myGameArea.keys && (myGameArea.keys[39])||(myGameArea.keys[68])) || (myGameArea.mouseRight && myGameArea.mouseRight===true)){
         myShip.speedX = 2;
     }
     myGameArea.bulletFreq+=1;
