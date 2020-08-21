@@ -6,16 +6,21 @@ var explosionIm;
 var score = 0 ;
 var mybackground;
 var textDisplay;
+// For Mouse Movement
+var shipPosition = 230;
+var global = this
 
+// Initial Score Count
 document.getElementById("score").innerHTML = score.toString().padStart(5, "0");;
 
+// Default Start Function
 function startGame() {
     myGameArea.start();
     myShip = new component(40, 40, "../media/static/ship.png", 230, 580,"image");
     explosionIm = new component(0, 0,"../media/effect/kill_effect.gif", 100, 100, "image");
     mybackground = new component(480,630,"../media/background/space.jpg",0,0,"background");
 }
-
+// Score Change to 5 Digits Function
 function updateScore(){
 	document.getElementById("score").innerHTML = score.toString().padStart(5, "0");;
 }
@@ -30,23 +35,43 @@ var myGameArea = {
         this.frameNo = 0;
         this.bulletFreq = 0;
         this.interval = setInterval(updateGameArea,20);
+        // Key Press Down Bullet Fire
         window.addEventListener('keydown',function(e){
             myGameArea.keys = myGameArea.keys || [];
             myGameArea.keys[e.keyCode] = true;
         })
+        // Key Press Up Bullet Stop
         window.addEventListener('keyup', function(e){
             myGameArea.keys[e.keyCode] = false;
         })
-        // window.addEventListener('mousemove',function(e){
-        //     if(e.movementX>0){
-        //         myGameArea.mouseRight = true;
-        //         myGameArea.mouseLeft = false;
-        //     }
-        //     if(e.movementX<0){
-        //         myGameArea.mouseRight = false;
-        //         myGameArea.mouseLeft = true;
-        //     }
-        // })
+        // Mouse Down Bullet Fire
+        window.addEventListener('mousedown',function(e){
+            myGameArea.mouse=true;
+        })
+        // Mouse Up Bullet Stop
+        window.addEventListener('mouseup', function(e){
+            myGameArea.mouse=false;
+        })
+        // Mouse Movement
+        window.addEventListener('mousemove',function(event){
+            var task;
+            if (task) clearTimeout(task);
+                if ((event = event || global.event)) {
+                    if(event.movementX>0){
+                        myGameArea.mouseRight = true;
+                        myGameArea.mouseLeft = false;
+                    }
+                    if(event.movementX<0){
+                        myGameArea.mouseRight = false;
+                        myGameArea.mouseLeft = true;
+                    }
+                    task = setTimeout(mousestop, 1000);
+            }
+            function mousestop() {
+                myGameArea.mouseRight = false;
+                myGameArea.mouseLeft = false;
+            }
+        })
     },
     clear : function(){
         this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
@@ -56,6 +81,7 @@ var myGameArea = {
     }
 }
 
+// Refresh Time
 function everyinterval(n){
     if ((myGameArea.frameNo / n)%1 == 0){
         return true;
@@ -63,6 +89,7 @@ function everyinterval(n){
     return false;
 }
 
+// Bullet Frequency on constant key press
 function everybullet(n){
     if ((myGameArea.bulletFreq / n)%1 == 0){
         return true;
@@ -70,6 +97,7 @@ function everybullet(n){
     return false;
 }
 
+// Explosion Position and Effect
 function explosion(x,y){
     explosionIm.x = x;
     explosionIm.y = y;
@@ -150,6 +178,7 @@ function updateGameArea(){
     mybackground.speedY = 1;
     mybackground.newPos();
     mybackground.update();
+    // Player Bullet Collision with Enemy
     for(i=0;i<enemyShip.length;i+=1){
         for(j=0;j<myBullet.length;j+=1){
             if (enemyShip[i].crashwith(myBullet[j])){
@@ -161,6 +190,7 @@ function updateGameArea(){
             }
         }
     }
+    // Enemy Ship Movement
     myGameArea.frameNo +=1;
     if( myGameArea.frameNo == 1 || everyinterval(100)){
         var dir = "left";
@@ -174,6 +204,7 @@ function updateGameArea(){
         y = Math.floor(Math.random()*(200))
         enemyShip.push(new component(60, 60, "../media/static/enemy.png", x, y,"image",dir)); 
     }
+    // Enemy Bullet Fire
     for(i=0;i<enemyShip.length;i+=1){
         if(myGameArea.bulletFreq && everybullet(70)){
             xe = enemyShip[i].x + 20;
@@ -190,28 +221,34 @@ function updateGameArea(){
     }
     myShip.speedX = 0;
     myShip.speedY = 0;
+    // Left Movement from Keyboard and Mouse : a and left arrow
     if ((myGameArea.keys && (myGameArea.keys[37] || myGameArea.keys[65])) || (myGameArea.mouseLeft && myGameArea.mouseLeft===true)){
-        myShip.speedX = -2;
+        myShip.speedX = -3;
     }
+    // Right Movement from Keyboard and Mouse : d and right arrow
     if ((myGameArea.keys && (myGameArea.keys[39] || myGameArea.keys[68])) || (myGameArea.mouseRight && myGameArea.mouseRight===true)){
-        myShip.speedX = 2;
+        myShip.speedX = 3;
     }
+    // Fire Bullet: Keyboard->Enter : Mouse->Click
     myGameArea.bulletFreq+=1;
-    if (myGameArea.keys && myGameArea.keys[13]){
+    if ((myGameArea.keys && myGameArea.keys[13]) || (myGameArea.mouse && myGameArea.mouse===true)){
         if(myGameArea.bulletFreq && everybullet(20)){
             xm = myShip.x;
             ym = myShip.y;
             myBullet.push(new component(12, 18, "../media/static/missile.png", xm, ym,"image")); 
         }
     }
+    // Player Bullet Translation
     for(j=0;j<myBullet.length;j+=1){
         myBullet[j].y -= 2;
         myBullet[j].update();
     }
+    // Enemy Bullet Translation
     for(j=0;j<enemyBullet.length;j+=1){
         enemyBullet[j].y += 2;
         enemyBullet[j].update();
     }
+    // Checking Collision of Player and Enemy Bullet
     for(i=0;i<enemyBullet.length;i+=1){
         if(myShip.crashwith(enemyBullet[i])){
             score--;
@@ -222,6 +259,7 @@ function updateGameArea(){
             textDisplay.update();
         }
     }
+    // Screen Updation on an Event
     myShip.newPos();
     myShip.update();
     explosionIm.update()
