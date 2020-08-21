@@ -1,6 +1,7 @@
 var myShip;
 var enemyShip = [];
 var myBullet = [];
+var enemyBullet = [];
 var explosionIm;
 var score = 0 ;
 var mybackground;
@@ -81,13 +82,14 @@ function explosion(x,y){
     },200);
 }
 
-function component(width, height, color, x, y,type) {
+function component(width, height, color, x, y,type,dir="left") {
     this.type = type;
     if(type=="image" || type =="background"){
         this.image = new Image();
         this.image.src = color;
     }
     this.width = width;
+    this.direction = dir;
     this.height = height;
     this.speedX = 0;
     this.speedY = 0;
@@ -139,7 +141,7 @@ function component(width, height, color, x, y,type) {
 
 function updateGameArea(){
     myGameArea.clear();
-    mybackground.speedY = 2;
+    mybackground.speedY = 1;
     mybackground.newPos();
     mybackground.update();
     for(i=0;i<enemyShip.length;i+=1){
@@ -155,12 +157,29 @@ function updateGameArea(){
     }
     myGameArea.frameNo +=1;
     if( myGameArea.frameNo == 1 || everyinterval(100)){
-        x = myGameArea.canvas.width;
+        var dir = "left";
+        if(Math.random()>0.5){
+            x = myGameArea.canvas.width;
+        }
+        else{
+            x=-60;
+            dir = "right";
+        }
         y = Math.floor(Math.random()*(200))
-        enemyShip.push(new component(60, 60, "../media/static/enemy.png", x, y,"image")); 
+        enemyShip.push(new component(60, 60, "../media/static/enemy.png", x, y,"image",dir)); 
     }
     for(i=0;i<enemyShip.length;i+=1){
-        enemyShip[i].x += -1.5;
+        if(myGameArea.bulletFreq && everybullet(70)){
+            xe = enemyShip[i].x + 20;
+            ye = enemyShip[i].y + 30;
+            enemyBullet.push(new component(20,30,"../media/static/laserBullet.png",xe,ye,"image"));
+        }
+        if(enemyShip[i].direction == "left"){
+            enemyShip[i].x += -1.5;
+        }
+        else{
+            enemyShip[i].x += 1.5;
+        }
         enemyShip[i].update();
     }
     myShip.speedX = 0;
@@ -182,6 +201,10 @@ function updateGameArea(){
     for(j=0;j<myBullet.length;j+=1){
         myBullet[j].y -= 2;
         myBullet[j].update();
+    }
+    for(j=0;j<enemyBullet.length;j+=1){
+        enemyBullet[j].y += 2;
+        enemyBullet[j].update();
     }
     myShip.newPos();
     myShip.update();
