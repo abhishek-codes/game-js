@@ -256,7 +256,7 @@ function updateGameArea(){
     // Checking Collision of Player and Enemy Bullet
     for(i=0;i<enemyBullet.length;i+=1){
         if(myShip.crashwith(enemyBullet[i])){
-            if(high_score>score){
+            if(high_score<score){
                 high_score = score;
                 updateHighScore();
             }
