@@ -5,6 +5,7 @@ var enemyBullet = [];
 var explosionIm;
 var score = 0 ;
 var mybackground;
+var textDisplay;
 
 document.getElementById("score").innerHTML = score.toString().padStart(5, "0");;
 
@@ -103,6 +104,11 @@ function component(width, height, color, x, y,type,dir="left") {
                 ctx.drawImage(this.image, this.x, this.y - this.height, this.width, this.height);
             }
         }
+        else if (this.type == "text") {
+            ctx.font = this.width + " " + this.height;
+            ctx.fillStyle = color;
+            ctx.fillText(this.text, this.x, this.y);
+        }
         else{
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);    
@@ -172,7 +178,7 @@ function updateGameArea(){
         if(myGameArea.bulletFreq && everybullet(70)){
             xe = enemyShip[i].x + 20;
             ye = enemyShip[i].y + 30;
-            enemyBullet.push(new component(20,30,"../media/static/laserBullet.png",xe,ye,"image"));
+            enemyBullet.push(new component(18,22,"../media/static/laserBullet.png",xe,ye,"image"));
         }
         if(enemyShip[i].direction == "left"){
             enemyShip[i].x += -1.5;
@@ -184,10 +190,10 @@ function updateGameArea(){
     }
     myShip.speedX = 0;
     myShip.speedY = 0;
-    if ((myGameArea.keys && myGameArea.keys[37,65]) || (myGameArea.mouseLeft && myGameArea.mouseLeft===true)){
+    if ((myGameArea.keys && (myGameArea.keys[37] || myGameArea.keys[65])) || (myGameArea.mouseLeft && myGameArea.mouseLeft===true)){
         myShip.speedX = -2;
     }
-    if ((myGameArea.keys && myGameArea.keys[39,68]) || (myGameArea.mouseRight && myGameArea.mouseRight===true)){
+    if ((myGameArea.keys && (myGameArea.keys[39] || myGameArea.keys[68])) || (myGameArea.mouseRight && myGameArea.mouseRight===true)){
         myShip.speedX = 2;
     }
     myGameArea.bulletFreq+=1;
@@ -195,7 +201,7 @@ function updateGameArea(){
         if(myGameArea.bulletFreq && everybullet(20)){
             xm = myShip.x;
             ym = myShip.y;
-            myBullet.push(new component(25, 25, "../media/static/missile.gif", xm, ym,"image")); 
+            myBullet.push(new component(12, 18, "../media/static/missile.png", xm, ym,"image")); 
         }
     }
     for(j=0;j<myBullet.length;j+=1){
@@ -205,6 +211,16 @@ function updateGameArea(){
     for(j=0;j<enemyBullet.length;j+=1){
         enemyBullet[j].y += 2;
         enemyBullet[j].update();
+    }
+    for(i=0;i<enemyBullet.length;i+=1){
+        if(myShip.crashwith(enemyBullet[i])){
+            score--;
+            explosion(myShip.x,myShip.y-20);
+            myGameArea.stop();
+            textDisplay = new component("48px", "Consolas", "white",130, 300, "text");
+            textDisplay.text = "Game Over";
+            textDisplay.update();
+        }
     }
     myShip.newPos();
     myShip.update();
