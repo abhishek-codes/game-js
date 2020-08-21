@@ -35,6 +35,16 @@ var myGameArea = {
         window.addEventListener('keyup', function(e){
             myGameArea.keys[e.keyCode] = false;
         })
+        // window.addEventListener('mousemove',function(e){
+        //     if(e.movementX>0){
+        //         myGameArea.mouseRight = true;
+        //         myGameArea.mouseLeft = false;
+        //     }
+        //     if(e.movementX<0){
+        //         myGameArea.mouseRight = false;
+        //         myGameArea.mouseLeft = true;
+        //     }
+        // })
     },
     clear : function(){
         this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
@@ -155,10 +165,10 @@ function updateGameArea(){
     }
     myShip.speedX = 0;
     myShip.speedY = 0;
-    if (myGameArea.keys && myGameArea.keys[37]){
+    if ((myGameArea.keys && myGameArea.keys[37,65]) || (myGameArea.mouseLeft && myGameArea.mouseLeft===true)){
         myShip.speedX = -2;
     }
-    if (myGameArea.keys && myGameArea.keys[39]){
+    if ((myGameArea.keys && myGameArea.keys[39,68]) || (myGameArea.mouseRight && myGameArea.mouseRight===true)){
         myShip.speedX = 2;
     }
     myGameArea.bulletFreq+=1;
