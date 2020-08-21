@@ -26,9 +26,24 @@ function startGame() {
 function updateScore(){
 	document.getElementById("score").innerHTML = score.toString().padStart(5, "0");;
 }
+// High Score Change to 5 Digits Function
 function updateHighScore(){
 	document.getElementById("high_score").innerHTML = score.toString().padStart(5, "0");;
 }
+// Global Variables Reset Function
+function resetGlobalVariables(){
+    myShip = '';
+    enemyShip = [];
+    myBullet = [];
+    enemyBullet = [];
+    explosionIm = '';
+    score = 0;
+    updateScore();
+    mybackground = '';
+    textDisplay = '';
+    shipPosition = 230;
+    global = this;
+};
 
 var myGameArea = {
     canvas : document.createElement("canvas"),
@@ -77,6 +92,12 @@ var myGameArea = {
                 myGameArea.mouseLeft = false;
             }
         })
+        // Restart Game
+        document.getElementById("restart").addEventListener("click", function(){
+            document.getElementById("restart").style.display = "none";
+            resetGlobalVariables();
+            startGame();
+        }); 
     },
     clear : function(){
         this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
@@ -262,6 +283,7 @@ function updateGameArea(){
             }
             explosion(myShip.x,myShip.y-20);
             myGameArea.stop();
+            document.getElementById("restart").style.display = "block";
             textDisplay = new component("48px", "Consolas", "white",130, 300, "text");
             textDisplay.text = "Game Over";
             textDisplay.update();
