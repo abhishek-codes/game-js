@@ -256,8 +256,10 @@ function updateGameArea(){
     // Checking Collision of Player and Enemy Bullet
     for(i=0;i<enemyBullet.length;i+=1){
         if(myShip.crashwith(enemyBullet[i])){
-            high_score = score;
-            updateHighScore();
+            if(high_score>score){
+                high_score = score;
+                updateHighScore();
+            }
             explosion(myShip.x,myShip.y-20);
             myGameArea.stop();
             textDisplay = new component("48px", "Consolas", "white",130, 300, "text");
