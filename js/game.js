@@ -3,6 +3,7 @@ var enemyShip = [];
 var myBullet = [];
 var explosionIm;
 var score = 0 ;
+var mybackground;
 
 document.getElementById("score").innerHTML = score.toString().padStart(5, "0");;
 
@@ -10,6 +11,7 @@ function startGame() {
     myGameArea.start();
     myShip = new component(40, 40, "../media/static/ship.png", 230, 580,"image");
     explosionIm = new component(0, 0,"../media/effect/kill_effect.gif", 100, 100, "image");
+    mybackground = new component(480,630,"../media/background/space.jpg",0,0,"background");
 }
 
 function updateScore(){
@@ -71,7 +73,7 @@ function explosion(x,y){
 
 function component(width, height, color, x, y,type) {
     this.type = type;
-    if(type=="image"){
+    if(type=="image" || type =="background"){
         this.image = new Image();
         this.image.src = color;
     }
@@ -83,8 +85,11 @@ function component(width, height, color, x, y,type) {
     this.y = y;
     this.update = function(){    
         ctx = myGameArea.context;
-        if(this.type == "image"){
+        if(this.type == "image" || this.type == "background"){
             ctx.drawImage(this.image,this.x,this.y,this.width,this.height);
+            if (type == "background") {
+                ctx.drawImage(this.image, this.x, this.y - this.height, this.width, this.height);
+            }
         }
         else{
             ctx.fillStyle = color;
@@ -99,6 +104,11 @@ function component(width, height, color, x, y,type) {
             this.x += this.speedX;
         }
         this.y += this.speedY;
+        if (this.type == "background") {
+            if (this.y == (this.height)) {
+              this.y = 0;
+            }
+        }
     }
     this.crashwith = function(otherobj){
         var myleft = this.x;
@@ -119,6 +129,9 @@ function component(width, height, color, x, y,type) {
 
 function updateGameArea(){
     myGameArea.clear();
+    mybackground.speedY = 2;
+    mybackground.newPos();
+    mybackground.update();
     for(i=0;i<enemyShip.length;i+=1){
         for(j=0;j<myBullet.length;j+=1){
             if (enemyShip[i].crashwith(myBullet[j])){
