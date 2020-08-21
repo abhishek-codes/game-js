@@ -16,6 +16,8 @@ document.getElementById("score").innerHTML = score.toString().padStart(5, "0");
 document.getElementById("high_score").innerHTML = score.toString().padStart(5, "0");
 
 function restartGame(){
+    score=0;
+    updateScore();
     document.getElementById('restart').style.display="none";
     myGameArea.stop();
     startGame();
@@ -39,20 +41,6 @@ function updateScore(){
 function updateHighScore(){
 	document.getElementById("high_score").innerHTML = score.toString().padStart(5, "0");;
 }
-// Global Variables Reset Function
-// function resetGlobalVariables(){
-//     myShip = '';
-//     enemyShip = [];
-//     myBullet = [];
-//     enemyBullet = [];
-//     explosionIm = '';
-//     score = 0;
-//     updateScore();
-//     mybackground = '';
-//     textDisplay = '';
-//     shipPosition = 230;
-//     global = this;
-// };
 
 var myGameArea = {
     canvas : document.createElement("canvas"),
@@ -74,13 +62,13 @@ var myGameArea = {
             myGameArea.keys[e.keyCode] = false;
         })
         // Mouse Down Bullet Fire
-        // window.addEventListener('mousedown',function(e){
-        //     myGameArea.mouse=true;
-        // })
+        window.addEventListener('mousedown',function(e){
+            myGameArea.mouse=true;
+        })
         // Mouse Up Bullet Stop
-        // window.addEventListener('mouseup', function(e){
-        //     myGameArea.mouse=false;
-        // })
+        window.addEventListener('mouseup', function(e){
+            myGameArea.mouse=false;
+        })
         // // Mouse Movement
         // window.addEventListener('mousemove',function(event){
         //     var task;
@@ -101,12 +89,6 @@ var myGameArea = {
         //         myGameArea.mouseLeft = false;
         //     }
         // })
-        // Restart Game
-        // document.getElementById("restart").addEventListener("click", function(){
-        //     document.getElementById("restart").style.display = "none";
-        //     resetGlobalVariables();
-        //     startGame();
-        // }); 
     },
     clear : function(){
         this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
