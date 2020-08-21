@@ -9,14 +9,23 @@ var mybackground;
 var textDisplay;
 // For Mouse Movement
 var shipPosition = 230;
-var global = this
+var global = this;
 
 // Initial Score Count
 document.getElementById("score").innerHTML = score.toString().padStart(5, "0");
 document.getElementById("high_score").innerHTML = score.toString().padStart(5, "0");
 
+function restartGame(){
+    document.getElementById('restart').style.display="none";
+    myGameArea.stop();
+    startGame();
+}
+
 // Default Start Function
 function startGame() {
+    enemyShip = [];
+    myBullet = [];
+    enemyBullet = [];
     myGameArea.start();
     myShip = new component(40, 40, "../media/static/ship.png", 230, 580,"image");
     explosionIm = new component(0, 0,"../media/effect/kill_effect.gif", 100, 100, "image");
@@ -31,19 +40,19 @@ function updateHighScore(){
 	document.getElementById("high_score").innerHTML = score.toString().padStart(5, "0");;
 }
 // Global Variables Reset Function
-function resetGlobalVariables(){
-    myShip = '';
-    enemyShip = [];
-    myBullet = [];
-    enemyBullet = [];
-    explosionIm = '';
-    score = 0;
-    updateScore();
-    mybackground = '';
-    textDisplay = '';
-    shipPosition = 230;
-    global = this;
-};
+// function resetGlobalVariables(){
+//     myShip = '';
+//     enemyShip = [];
+//     myBullet = [];
+//     enemyBullet = [];
+//     explosionIm = '';
+//     score = 0;
+//     updateScore();
+//     mybackground = '';
+//     textDisplay = '';
+//     shipPosition = 230;
+//     global = this;
+// };
 
 var myGameArea = {
     canvas : document.createElement("canvas"),
@@ -65,39 +74,39 @@ var myGameArea = {
             myGameArea.keys[e.keyCode] = false;
         })
         // Mouse Down Bullet Fire
-        window.addEventListener('mousedown',function(e){
-            myGameArea.mouse=true;
-        })
+        // window.addEventListener('mousedown',function(e){
+        //     myGameArea.mouse=true;
+        // })
         // Mouse Up Bullet Stop
-        window.addEventListener('mouseup', function(e){
-            myGameArea.mouse=false;
-        })
-        // Mouse Movement
-        window.addEventListener('mousemove',function(event){
-            var task;
-            if (task) clearTimeout(task);
-                if ((event = event || global.event)) {
-                    if(event.movementX>0){
-                        myGameArea.mouseRight = true;
-                        myGameArea.mouseLeft = false;
-                    }
-                    if(event.movementX<0){
-                        myGameArea.mouseRight = false;
-                        myGameArea.mouseLeft = true;
-                    }
-                    task = setTimeout(mousestop, 1000);
-            }
-            function mousestop() {
-                myGameArea.mouseRight = false;
-                myGameArea.mouseLeft = false;
-            }
-        })
+        // window.addEventListener('mouseup', function(e){
+        //     myGameArea.mouse=false;
+        // })
+        // // Mouse Movement
+        // window.addEventListener('mousemove',function(event){
+        //     var task;
+        //     if (task) clearTimeout(task);
+        //         if ((event = event || global.event)) {
+        //             if(event.movementX>0){
+        //                 myGameArea.mouseRight = true;
+        //                 myGameArea.mouseLeft = false;
+        //             }
+        //             if(event.movementX<0){
+        //                 myGameArea.mouseRight = false;
+        //                 myGameArea.mouseLeft = true;
+        //             }
+        //             task = setTimeout(mousestop, 1000);
+        //     }
+        //     function mousestop() {
+        //         myGameArea.mouseRight = false;
+        //         myGameArea.mouseLeft = false;
+        //     }
+        // })
         // Restart Game
-        document.getElementById("restart").addEventListener("click", function(){
-            document.getElementById("restart").style.display = "none";
-            resetGlobalVariables();
-            startGame();
-        }); 
+        // document.getElementById("restart").addEventListener("click", function(){
+        //     document.getElementById("restart").style.display = "none";
+        //     resetGlobalVariables();
+        //     startGame();
+        // }); 
     },
     clear : function(){
         this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
