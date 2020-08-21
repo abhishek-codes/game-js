@@ -7,3 +7,6 @@ body{
     width: 90%;
     text-align: center;
 }
+#restart{
+    display: none;
+}
