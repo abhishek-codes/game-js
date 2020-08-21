@@ -1,6 +1,7 @@
 var myShip;
 var enemyShip = [];
 var myBullet = [];
+var enemyBullet = [];
 var explosionIm;
 var score = 0 ;
 var mybackground;
@@ -130,7 +131,7 @@ function component(width, height, color, x, y,type,dir="left") {
 
 function updateGameArea(){
     myGameArea.clear();
-    mybackground.speedY = 2;
+    mybackground.speedY = 1;
     mybackground.newPos();
     mybackground.update();
     for(i=0;i<enemyShip.length;i+=1){
@@ -158,6 +159,11 @@ function updateGameArea(){
         enemyShip.push(new component(60, 60, "../media/static/enemy.png", x, y,"image",dir)); 
     }
     for(i=0;i<enemyShip.length;i+=1){
+        if(myGameArea.bulletFreq && everybullet(70)){
+            xe = enemyShip[i].x + 20;
+            ye = enemyShip[i].y + 30;
+            enemyBullet.push(new component(20,30,"../media/static/laserBullet.png",xe,ye,"image"));
+        }
         if(enemyShip[i].direction == "left"){
             enemyShip[i].x += -1.5;
         }
@@ -185,6 +191,10 @@ function updateGameArea(){
     for(j=0;j<myBullet.length;j+=1){
         myBullet[j].y -= 2;
         myBullet[j].update();
+    }
+    for(j=0;j<enemyBullet.length;j+=1){
+        enemyBullet[j].y += 2;
+        enemyBullet[j].update();
     }
     myShip.newPos();
     myShip.update();
