@@ -10,11 +10,36 @@ var textDisplay;
 // For Mouse Movement
 var shipPosition = 230;
 var global = this;
+// Sounds
+// Need to import sounds from different js file by import
+var spaceship_fire = new sound("../media/sounds/spaceship_fire.mp3");
+var explosion_sound = new sound("../media/sounds/explosion.mp3");
+var game_over = new sound("../media/sounds/game_over.mp3");
+// Need to learn how to use autoplay background music directly from start game function
+var counter = 0;
+var background_sound = new sound("../media/sounds/background.mp3");
 
 // Initial Score Count
 document.getElementById("score").innerHTML = score.toString().padStart(5, "0");
 document.getElementById("high_score").innerHTML = score.toString().padStart(5, "0");
 
+// Sounds Function
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }
+};
+
+// Game Restart Function
 function restartGame(){
     score=0;
     updateScore();
@@ -33,6 +58,7 @@ function startGame() {
     explosionIm = new component(0, 0,"../media/effect/kill_effect.gif", 100, 100, "image");
     mybackground = new component(480,630,"../media/background/space.jpg",0,0,"background");
 }
+
 // Score Change to 5 Digits Function
 function updateScore(){
 	document.getElementById("score").innerHTML = score.toString().padStart(5, "0");;
@@ -120,6 +146,7 @@ function explosion(x,y){
     explosionIm.y = y;
     explosionIm.height = 80;
     explosionIm.width = 80;
+    explosion_sound.play();
     setTimeout(function(){
         explosionIm.height =0;
         explosionIm.width =0;
@@ -252,7 +279,13 @@ function updateGameArea(){
         if(myGameArea.bulletFreq && everybullet(20)){
             xm = myShip.x;
             ym = myShip.y;
-            myBullet.push(new component(12, 18, "../media/static/missile.png", xm, ym,"image")); 
+            myBullet.push(new component(12, 18, "../media/static/missile.png", xm, ym,"image"));
+            // Background music start
+            if(counter==0){
+                background_sound.play();
+            }
+            counter++;
+            spaceship_fire.play();
         }
     }
     // Player Bullet Translation
@@ -278,6 +311,7 @@ function updateGameArea(){
             textDisplay = new component("48px", "Consolas", "white",130, 300, "text");
             textDisplay.text = "Game Over";
             textDisplay.update();
+            game_over.play();
         }
     }
     // Screen Updation on an Event
